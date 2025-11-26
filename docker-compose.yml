@@ -8,21 +8,21 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - odoo-db-data:/var/lib/postgresql/data
-      - ./addons:/mnt/extra-addons
-
 
   odoo:
     image: odoo:19.0
     depends_on:
       - postgres
     ports:
-      - "8069:8069"
+      - "8069:8069"x
     environment:
       HOST: postgres
       USER: ${POSTGRES_USER}
       PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - odoo-web-data:/var/lib/odoo
+      - ./addons:/mnt/extra-addons
+
 
 volumes:
   odoo-web-data:
