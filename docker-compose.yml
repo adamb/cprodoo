@@ -8,6 +8,8 @@ services:
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
     volumes:
       - odoo-db-data:/var/lib/postgresql/data
+      - ./addons:/mnt/extra-addons
+
 
   odoo:
     image: odoo:19.0
