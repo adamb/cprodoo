@@ -27,7 +27,7 @@ A self-hosted Odoo-based membership management system for the CPR coworking spac
 
 ## Project Structure
 
-- `addons/cpro_membership/` - Custom membership module
+- `addons/cpr_membership/` - Custom membership module
 - `docker-compose.yml` - Docker services configuration
 - `.env` - Environment variables (not in git)
 
