@@ -1,4 +1,3 @@
-version: '3.8'
 services:
   postgres:
     image: postgres:15
@@ -14,7 +13,7 @@ services:
     depends_on:
       - postgres
     ports:
-      - "8069:8069"x
+      - "8069:8069"
     environment:
       HOST: postgres
       USER: ${POSTGRES_USER}

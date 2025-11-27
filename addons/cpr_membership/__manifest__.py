@@ -7,7 +7,9 @@
     'description': """
         Coworking membership management for CPR
     """,
-    'data': [],
+    'data': [
+    'views/member_views.xml',
+    ],
     'installable': True,
     'application': False,
 }
