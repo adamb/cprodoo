@@ -1,0 +1,4 @@
+[submodule "addons/vertical-association"]
+	path = addons/vertical-association
+	url = https://github.com/OCA/vertical-association.git
+	branch = 18.0
