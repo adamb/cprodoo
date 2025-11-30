@@ -1,3 +1,5 @@
 .env
 odoo-web-data/
 odoo-db-data/
+backup_*/
+*.tar.gz
