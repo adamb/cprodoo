@@ -14,19 +14,37 @@ BACKUP_DIR=$(ls $TEMP_DIR)
 # Stop containers
 docker-compose down
 
-# Restore database
+# Start postgres
 docker-compose up -d postgres
 sleep 5
-docker exec -i cprodoo-postgres-1 psql -U odoo -d postgres -c "DROP DATABASE IF EXISTS cpr;"
-docker exec -i cprodoo-postgres-1 psql -U odoo -d postgres -c "CREATE DATABASE cpr OWNER odoo;"
-docker exec -i cprodoo-postgres-1 psql -U odoo -d cpr < $TEMP_DIR/$BACKUP_DIR/cpr.sql
 
-# Start Odoo
-docker-compose up -d odoo
+# Detect container names
+if docker ps --format '{{.Names}}' | grep -q "cprodoo-postgres-1"; then
+    ODOO_CONTAINER="cprodoo-odoo-1"
+    POSTGRES_CONTAINER="cprodoo-postgres-1"
+else
+    ODOO_CONTAINER="cprodoo_postgres_1"
+    POSTGRES_CONTAINER="cprodoo_postgres_1"
+fi
+
+# Restore database
+docker exec -i $POSTGRES_CONTAINER psql -U odoo -d postgres -c "DROP DATABASE IF EXISTS cpr;"
+docker exec -i $POSTGRES_CONTAINER psql -U odoo -d postgres -c "CREATE DATABASE cpr OWNER odoo;"
+docker exec -i $POSTGRES_CONTAINER psql -U odoo -d cpr < $TEMP_DIR/$BACKUP_DIR/cpr.sql
+
+# Start all containers
+docker-compose up -d
 sleep 5
 
+# Detect odoo container name again (in case it changed)
+if docker ps --format '{{.Names}}' | grep -q "cprodoo-odoo-1"; then
+    ODOO_CONTAINER="cprodoo-odoo-1"
+else
+    ODOO_CONTAINER="cprodoo_odoo_1"
+fi
+
 # Restore filestore
-docker cp $TEMP_DIR/$BACKUP_DIR/filestore/. cprodoo-odoo-1:/var/lib/odoo/filestore/
+docker cp $TEMP_DIR/$BACKUP_DIR/filestore/. $ODOO_CONTAINER:/var/lib/odoo/filestore/
 
 # Copy .env
 cp $TEMP_DIR/$BACKUP_DIR/.env .env
