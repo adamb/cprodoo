@@ -46,6 +46,11 @@ fi
 # Restore filestore
 docker cp $TEMP_DIR/$BACKUP_DIR/filestore/. $ODOO_CONTAINER:/var/lib/odoo/filestore/
 
+# Fix permissions
+echo "Fixing filestore permissions..."
+docker exec -u root $ODOO_CONTAINER chown -R odoo:odoo /var/lib/odoo
+
+
 # Copy .env
 cp $TEMP_DIR/$BACKUP_DIR/.env .env
 

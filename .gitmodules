@@ -2,3 +2,7 @@
 	path = addons/vertical-association
 	url = https://github.com/OCA/vertical-association.git
 	branch = 18.0
+[submodule "addons/server-auth"]
+	path = addons/server-auth
+	url = https://github.com/OCA/server-auth.git
+	branch = 18.0
