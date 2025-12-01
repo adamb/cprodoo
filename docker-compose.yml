@@ -18,6 +18,8 @@ services:
       HOST: postgres
       USER: ${POSTGRES_USER}
       PASSWORD: ${POSTGRES_PASSWORD}
+      PROXY_MODE: "true"
+      FORWARDED_ALLOW_IPS: "*"
     volumes:
       - odoo-web-data:/var/lib/odoo
       - ./addons:/mnt/extra-addons
