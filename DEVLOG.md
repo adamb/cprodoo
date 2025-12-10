@@ -1,3 +1,53 @@
+## 2025-12-10 11:52:42
+
+### Continue Stipe integration
+
+So do we have any webhooks?  
+
+Start docker app
+docker-compose up
+
+% stripe listen --forward-to localhost:8069/payment/stripe/webhook
+
+
+Adding a controller for the addon.
+
+
+
+
+## 2025-12-09
+
+### Stripe Integration
+- Created Stripe account for Code Puerto Rico
+- Configured Stripe payment provider in Odoo (test mode)
+- Created products:
+  - Holberton Grad Membership: $10/month recurring subscription
+  - Day Pass: $20 one-time purchase
+- Added payment links to pricing page
+- Tested webhooks using Stripe CLI (`stripe listen --forward-to localhost:8069/payment/stripe/webhook`)
+- Confirmed webhooks received by Odoo (200 responses)
+
+### Issue Found
+- Built-in Stripe webhook handler doesn't create contacts from external payment links
+- Started building custom webhook controller in cpr_membership module
+- Files created: controllers/__init__.py, controllers/stripe_webhook.py
+- Need to test and verify contact creation on checkout.session.completed
+
+### Previous Sessions
+- Google OAuth working (published, out of test mode)
+- Production deployed at https://code.pr via Cloudflare Tunnel
+- Backup/restore scripts working between Mac and Debian
+
+### todo
+
+- Add coupon code support in stripe
+- Deploy to Linode
+- Add event page 
+- Add page for paying for an event
+- Calendar for event space and conf room (find addons)
+
+
+
 2025-12-09 14:34:01
 
 Get it running on my mac again.
@@ -117,25 +167,3 @@ adamb@picuas ~ % stripe listen --forward-to localhost:8069/payment/stripe/webhoo
 2025-12-09 23:15:00   --> charge.updated [evt_3ScdrhFWEYN6JR6K2BJIoUr2]
 2025-12-09 23:15:00  <--  [200] POST http://localhost:8069/payment/stripe/webhook [evt_3ScdrhFWEYN6JR6K2BJIoUr2]
 
-## 2025-12-09
-
-### Stripe Integration
-- Created Stripe account for Code Puerto Rico
-- Configured Stripe payment provider in Odoo (test mode)
-- Created products:
-  - Holberton Grad Membership: $10/month recurring subscription
-  - Day Pass: $20 one-time purchase
-- Added payment links to pricing page
-- Tested webhooks using Stripe CLI (`stripe listen --forward-to localhost:8069/payment/stripe/webhook`)
-- Confirmed webhooks received by Odoo (200 responses)
-
-### Issue Found
-- Built-in Stripe webhook handler doesn't create contacts from external payment links
-- Started building custom webhook controller in cpr_membership module
-- Files created: controllers/__init__.py, controllers/stripe_webhook.py
-- Need to test and verify contact creation on checkout.session.completed
-
-### Previous Sessions
-- Google OAuth working (published, out of test mode)
-- Production deployed at https://code.pr via Cloudflare Tunnel
-- Backup/restore scripts working between Mac and Debian
