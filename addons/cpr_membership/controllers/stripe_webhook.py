@@ -43,7 +43,29 @@ class StripeWebhookController(http.Controller):
                 if amount > 0:
                     self._create_invoice(partner, amount, product_name, session.get('id'))
         
+        elif event['type'] == 'invoice.paid':
+            # Handle recurring subscription payment
+            invoice_data = event['data']['object']
+            customer_email = invoice_data.get('customer_email')
+            amount = invoice_data.get('amount_paid', 0) / 100
+            subscription_id = invoice_data.get('subscription')
+            
+            _logger.info("Recurring payment: %s - $%s", customer_email, amount)
+            
+            if customer_email and amount > 0:
+                Partner = request.env['res.partner'].sudo()
+                partner = Partner.search([('email', '=', customer_email)], limit=1)
+                
+                if partner:
+                    # Create invoice for recurring payment
+                    product_name = "Membership Renewal"
+                    self._create_invoice(partner, amount, product_name, f"sub_{subscription_id}")
+                    _logger.info("Created recurring invoice for %s", partner.name)
+                else:
+                    _logger.warning("No contact found for recurring payment: %s", customer_email)
+        
         return {'status': 'ok'}
+
     
     def _create_portal_user(self, partner):
         """Create a portal user and send invitation email"""
@@ -111,3 +133,5 @@ class StripeWebhookController(http.Controller):
             
         except Exception as e:
             _logger.error("Failed to register payment: %s", str(e))
+
+    
