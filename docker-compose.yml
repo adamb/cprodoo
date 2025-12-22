@@ -1,7 +1,7 @@
 services:
   postgres:
-    restart: unless-stopped
     image: postgres:15
+    restart: unless-stopped
     environment:
       POSTGRES_DB: ${POSTGRES_DB}
       POSTGRES_USER: ${POSTGRES_USER}
@@ -9,11 +9,25 @@ services:
     volumes:
       - odoo-db-data:/var/lib/postgresql/data
 
+  postfix:
+    image: boky/postfix
+    restart: unless-stopped
+    environment:
+      - RELAYHOST=[smtp.improvmx.com]:587
+      - RELAYHOST_USERNAME=${IMPROVMX_SMTP_USER}
+      - RELAYHOST_PASSWORD=${IMPROVMX_SMTP_PASS}
+      - SMTP_USE_TLS=yes
+      - ALLOWED_SENDER_DOMAINS=code.pr
+      - POSTFIX_myhostname=mailrelay.code.pr
+    volumes:
+      - postfix_spool:/var/spool/postfix
+
   odoo:
     restart: unless-stopped
     build: .
     depends_on:
       - postgres
+      - postfix
     ports:
       - "8069:8069"
     environment:
@@ -26,7 +40,8 @@ services:
       - odoo-web-data:/var/lib/odoo
       - ./addons:/mnt/extra-addons
 
-
 volumes:
   odoo-web-data:
   odoo-db-data:
+  postfix_spool:
+  

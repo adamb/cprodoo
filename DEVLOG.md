@@ -1,3 +1,18 @@
+## 2025-12-22 18:40:35
+
+Today noticed odoo hanging when i was trying to login and show Mercy something.
+
+Looked at the logs and found that it is sending blocking email using the improvmx
+server.
+
+So adding a sidecar for postfix and telling odoo to use that for email sending.
+
+updated the docker-compose.yml
+
+the improvmx creds now have to live in the .env
+
+
+
 ## 2025-12-10 11:52:42
 
 ### Continue Stipe integration
@@ -12,6 +27,28 @@ docker-compose up
 
 Adding a controller for the addon.
 
+Live links for stripe
+
+Virtual Office
+https://buy.stripe.com/28E4gz1CV7q48H23A45c400
+
+Hot Desk
+https://buy.stripe.com/bJe7sLgxPh0E4qMdaE5c401
+
+Combo
+https://buy.stripe.com/3cI8wPftL9yc1eA3A45c402
+
+Conf room hours
+https://buy.stripe.com/eVq5kD3L3bGk8H2gmQ5c403
+
+Event Space
+https://buy.stripe.com/7sYdR995naCg5uQb2w5c404
+
+Holberton Grad Membership
+https://buy.stripe.com/bJe8wP0yRcKoe1m7Qk5c405
+
+Day Pass
+https://buy.stripe.com/bJe4gz2GZeSw0aweeI5c406
 
 
 
