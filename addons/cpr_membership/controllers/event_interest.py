@@ -33,14 +33,14 @@ class EventInterestController(http.Controller):
         if not event_labels:
             return request.redirect('/upcoming-events?error=no_events')
 
-        # Find or create partner tags
-        Tag = request.env['res.partner.category'].sudo()
-        tag_ids = []
+        # Find or create CRM tags
+        CrmTag = request.env['crm.tag'].sudo()
+        crm_tag_ids = []
         for label in event_labels:
-            tag = Tag.search([('name', '=', label)], limit=1)
+            tag = CrmTag.search([('name', '=', label)], limit=1)
             if not tag:
-                tag = Tag.create({'name': label})
-            tag_ids.append(tag.id)
+                tag = CrmTag.create({'name': label})
+            crm_tag_ids.append(tag.id)
 
         # Create CRM lead
         Lead = request.env['crm.lead'].sudo()
@@ -49,7 +49,7 @@ class EventInterestController(http.Controller):
             'contact_name': name,
             'email_from': email,
             'description': f"Event interest signup from website.\nEvents: {', '.join(event_labels)}",
-            'tag_ids': [(6, 0, tag_ids)],
+            'tag_ids': [(6, 0, crm_tag_ids)],
             'type': 'lead',
         })
         _logger.info("Created event interest lead %s for %s (%s)", lead.id, name, email)
