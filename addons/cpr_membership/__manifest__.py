@@ -1,7 +1,7 @@
 {
     'name': 'CPR Membership',
     'version': '1.0.0',
-    'depends': ['contacts'],
+    'depends': ['contacts', 'crm', 'website'],
     'author': 'Code Puerto Rico',
     'category': 'Sales',
     'description': """
