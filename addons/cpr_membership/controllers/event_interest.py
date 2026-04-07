@@ -54,4 +54,28 @@ class EventInterestController(http.Controller):
         })
         _logger.info("Created event interest lead %s for %s (%s)", lead.id, name, email)
 
-        return request.redirect('/upcoming-events?success=1')
+        # Send confirmation email
+        event_list = ''.join(f'<li>{label}</li>' for label in event_labels)
+        try:
+            Mail = request.env['mail.mail'].sudo()
+            Mail.create({
+                'subject': 'Code Puerto Rico — You\'re on the list!',
+                'email_from': 'info@code.pr',
+                'email_to': email,
+                'body_html': f'''<div style="font-family: sans-serif;">
+<p>Hi {name},</p>
+<p>Thanks for your interest! We'll notify you when these events are scheduled:</p>
+<ul>{event_list}</ul>
+<p>In the meantime, check out our <a href="https://code.pr/upcoming-events">upcoming events</a> for things happening soon.</p>
+<p>See you there!<br/>The Code Puerto Rico Team</p>
+</div>''',
+            }).send()
+        except Exception as e:
+            _logger.error("Failed to send confirmation email to %s: %s", email, e)
+
+        return request.redirect('/upcoming-events-thanks')
+
+    @http.route('/upcoming-events-thanks', type='http', auth='public',
+                website=True)
+    def event_interest_thanks(self, **kwargs):
+        return request.render('website.upcoming-events-thanks', {})
