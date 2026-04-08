@@ -10,7 +10,9 @@ A self-hosted Odoo-based membership management system for the CPR coworking spac
 - Google OAuth login (Sign in with Google)
 - OCA membership extensions for enhanced membership management
 - Salto access key tracking (integration stubbed)
-- Stripe payment integration (stubbed)
+- Stripe payment integration with automatic invoicing
+- Event interest signup form with email verification (creates CRM leads)
+- Website pages managed via Odoo MCP server
 
 ## Requirements
 
@@ -37,7 +39,7 @@ docker-compose build docker-compose up -d
 
 7. Install modules:
 - Go to Apps → Update Apps List
-- Search for and activate: "CPR Membership", "Members", "Membership Extension", "Website", "auth_oidc"
+- Search for and activate: "CPR Membership", "Members", "Membership Extension", "Website", "auth_oidc", "CRM", "Contact Form"
 
 ## Backup and Restore
 
@@ -63,7 +65,17 @@ These scripts work on both Mac and Linux (Debian).
 
 ## Deployment
 
-Production instance runs at https://code.pr via Cloudflare Tunnel.
+Production instance runs at https://code.pr via Cloudflare Tunnel on a Linode server.
+
+To deploy code changes:
+```bash
+git push origin main
+ssh adam@172.235.135.83 "cd ~/code/cprodoo && git pull origin main"
+# If models changed, upgrade the module:
+ssh adam@172.235.135.83 "cd ~/code/cprodoo && docker-compose run --rm odoo odoo -d cpr -u cpr_membership --stop-after-init"
+# Always restart after deploying:
+ssh adam@172.235.135.83 "cd ~/code/cprodoo && docker-compose restart odoo"
+```
 
 
 ## Email Delivery (Odoo + Postfix + ImprovMX)
@@ -123,8 +135,8 @@ Odoo must not talk directly to ImprovMX.
 
 In Settings → General Settings → Emails:
 	•	Default From Alias: info
-	•	Bounce Alias: info
-	•	Catchall Alias: info
+	•	Bounce Alias: bounce
+	•	Catchall Alias: catchall
 
 This ensures the envelope sender is always info@code.pr.
 
