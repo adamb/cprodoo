@@ -8,7 +8,8 @@
         Coworking membership management for CPR
     """,
     'data': [
-    'views/member_views.xml',
+        'views/member_views.xml',
+        'views/crm_lead_views.xml',
     ],
     'installable': True,
     'application': False,

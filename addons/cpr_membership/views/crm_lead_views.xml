@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Add email_verified to CRM lead form view -->
+    <record id="view_crm_lead_form_inherit" model="ir.ui.view">
+        <field name="name">crm.lead.form.inherit.cpr</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_lead_view_form"/>
+        <field name="arch" type="xml">
+            <field name="email_from" position="after">
+                <field name="email_verified" widget="boolean_toggle"/>
+            </field>
+        </field>
+    </record>
+
+    <!-- Add email_verified to CRM lead list view -->
+    <record id="view_crm_lead_list_inherit" model="ir.ui.view">
+        <field name="name">crm.lead.list.inherit.cpr</field>
+        <field name="model">crm.lead</field>
+        <field name="inherit_id" ref="crm.crm_case_tree_view_leads"/>
+        <field name="arch" type="xml">
+            <field name="tag_ids" position="after">
+                <field name="email_verified" string="Verified"/>
+            </field>
+        </field>
+    </record>
+</odoo>
