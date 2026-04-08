@@ -78,6 +78,44 @@ ssh adam@172.235.135.83 "cd ~/code/cprodoo && docker-compose restart odoo"
 ```
 
 
+## Development Workflow (Claude Code + Odoo MCP)
+
+This project is developed using [Claude Code](https://claude.ai/code) with an [Odoo MCP server](https://github.com/ivnvxd/mcp-server-odoo) that gives Claude direct read/write access to the live Odoo instance.
+
+This means Claude can do two types of work in a single conversation:
+
+**Website content changes (no deploy needed):**
+- Edit page content, add events, update team bios, restructure sections
+- Upload images as Odoo attachments
+- Create/update any Odoo database records (contacts, tags, CRM leads, etc.)
+
+These changes go directly to the database via the MCP server and are live immediately.
+
+**Code changes (deploy needed):**
+- New controllers, models, or views in `addons/cpr_membership/`
+- Changes to `__manifest__.py` dependencies
+- Any Python or XML file changes
+
+These require a git push + pull on the server + module upgrade + restart (see Deployment section).
+
+### MCP Server Setup
+
+The Odoo MCP server is configured per-project in Claude Code:
+
+```bash
+claude mcp add odoo \
+  --env ODOO_URL=https://code.pr \
+  --env ODOO_USER=adam@code.pr \
+  --env ODOO_API_KEY=<your-api-key> \
+  --env ODOO_DB=cpr \
+  --env ODOO_YOLO=true \
+  -- uvx mcp-server-odoo
+```
+
+To generate an API key: Odoo → user avatar → My Profile → Account Security → API Keys → New API Key.
+
+`ODOO_YOLO=true` enables read/write access via standard XML-RPC without needing the `mcp_server` Odoo module installed. Use `ODOO_YOLO=read` for read-only access.
+
 ## Email Delivery (Odoo + Postfix + ImprovMX)
 
 This project does not send email directly from Odoo to ImprovMX.
