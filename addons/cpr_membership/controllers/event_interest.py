@@ -12,6 +12,7 @@ VALID_EVENTS = {
     'pitch_prototype': 'Interest: Pitch and Prototype',
     'cloudflare': 'Interest: Cloudflare Meetup',
     'home_assistant': 'Interest: Home Assistant Meetup',
+    'demo_day': 'Interest: Demo Day',
 }
 
 
