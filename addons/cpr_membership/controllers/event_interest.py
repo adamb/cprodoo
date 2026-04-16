@@ -66,6 +66,22 @@ class EventInterestController(http.Controller):
         })
         _logger.info("Created event interest lead %s for %s (%s)", lead.id, name, email)
 
+        # Notify team of new signup
+        try:
+            Mail = request.env['mail.mail'].sudo()
+            Mail.create({
+                'subject': f'New event interest signup: {name}',
+                'email_from': 'info@code.pr',
+                'email_to': 'leads@code.pr',
+                'body_html': f'''<div style="font-family: sans-serif;">
+<p><strong>{name}</strong> ({email}) signed up for event notifications:</p>
+<ul>{(''.join(f'<li>{label}</li>' for label in event_labels))}</ul>
+<p><a href="https://code.pr/odoo/crm">View in CRM</a></p>
+</div>''',
+            }).send()
+        except Exception as e:
+            _logger.error("Failed to send lead notification: %s", e)
+
         # Send verification email
         verify_url = f"https://code.pr/cpr_membership/verify_email?token={token}"
         event_list = ''.join(f'<li>{label}</li>' for label in event_labels)
