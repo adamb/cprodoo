@@ -1,7 +1,7 @@
 {
     'name': 'CPR Membership',
     'version': '1.0.0',
-    'depends': ['contacts', 'crm', 'website'],
+    'depends': ['contacts', 'crm', 'website', 'website_blog'],
     'author': 'Code Puerto Rico',
     'category': 'Sales',
     'description': """
@@ -10,6 +10,7 @@
     'data': [
         'views/member_views.xml',
         'views/crm_lead_views.xml',
+        'views/blog_views.xml',
     ],
     'installable': True,
     'application': False,

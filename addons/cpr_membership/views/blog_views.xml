@@ -1,0 +1,8 @@
+<odoo>
+    <!-- Hide the blog cover banner on the blog listing page -->
+    <template id="hide_blog_cover" inherit_id="website_blog.blog_post_short" name="Hide Blog Cover">
+        <xpath expr="//div[@id='o_wblog_blog_top']" position="replace">
+            <div id="o_wblog_blog_top" class="pt-3"/>
+        </xpath>
+    </template>
+</odoo>
