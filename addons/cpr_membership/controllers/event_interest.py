@@ -74,10 +74,12 @@ class EventInterestController(http.Controller):
             Mail.create({
                 'subject': f'New event interest signup: {name}',
                 'email_from': 'info@code.pr',
-                'email_to': 'leads@code.pr',
+                'email_to': 'leads@code.pr'
+                    + (',owen@reala.io' if 'linux_workshop' in event_keys else ''),
                 'body_html': f'''<div style="font-family: sans-serif;">
 <p><strong>{name}</strong> ({email}) signed up for event notifications:</p>
 <ul>{(''.join(f'<li>{label}</li>' for label in event_labels))}</ul>
+{(f'<p><strong>PC Type:</strong> {kwargs.get("pc_type", "").strip()}</p>' if kwargs.get('pc_type') else '')}
 <p><a href="https://code.pr/odoo/crm">View in CRM</a></p>
 </div>''',
             }).send()
