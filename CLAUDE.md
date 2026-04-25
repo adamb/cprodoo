@@ -24,10 +24,21 @@ All custom code lives in `addons/cpr_membership/`:
   - `checkout.session.completed` → creates contact, portal user, invoice, registers payment
   - `invoice.paid` → handles recurring subscription renewals
 - `controllers/event_interest.py` - Event interest signup form with email verification
-  - `POST /cpr_membership/event_interest` → creates CRM lead tagged "Unverified", sends verification email
+  - `POST /cpr_membership/event_interest` → creates CRM lead tagged "Unverified", sends verification email, notifies leads@code.pr (+ owen@reala.io for Linux workshop)
   - `GET /cpr_membership/verify_email?token=...` → marks lead as "Verified"
+  - Captures UTM params (utm_source, utm_medium, utm_campaign) for marketing attribution
+  - `VALID_EVENTS` dict maps form field names to CRM tag labels
 - `views/member_views.xml` - Adds Membership tab to contact form
-- `__manifest__.py` - Depends on `contacts`, `crm`, `website` modules
+- `views/crm_lead_views.xml` - CRM lead list/form with email_verified field
+- `views/blog_views.xml` - Hides blog cover banner on listing page
+- `__manifest__.py` - Depends on `contacts`, `crm`, `website`, `website_blog` modules
+
+Key website pages (managed via Odoo MCP, not code files):
+- Homepage (view 924), About (1784), Pricing (1785), Contact (1797)
+- Upcoming Events (view 1827) - event cards with summary links
+- Workshops listing (view 2031, url /workshops)
+- Linux Workshop (view 2030, url /workshops/linux-workshop)
+- Blog (website_blog module, blog.blog id 1)
 
 Two OCA Git submodules in `addons/`:
 - `vertical-association/` - Membership extensions (prorating, variable periods)

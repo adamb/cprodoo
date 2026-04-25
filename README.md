@@ -12,6 +12,9 @@ A self-hosted Odoo-based membership management system for the CPR coworking spac
 - Salto access key tracking (integration stubbed)
 - Stripe payment integration with automatic invoicing
 - Event interest signup form with email verification (creates CRM leads)
+- Workshop pages with dedicated URLs and registration forms
+- UTM marketing attribution tracking on all signups (source, medium, campaign)
+- Blog with event recaps and community content
 - Website pages managed via Odoo MCP server
 
 ## Requirements
@@ -55,7 +58,7 @@ These scripts work on both Mac and Linux (Debian).
 
 ## Project Structure
 
-- `addons/cpr_membership/` - Custom membership module
+- `addons/cpr_membership/` - Custom membership module (members, events, workshops, blog overrides)
 - `addons/vertical-association/` - OCA membership modules (submodule)
 - `addons/server-auth/` - OCA authentication modules (submodule)
 - `scripts/` - Backup and restore scripts
@@ -115,6 +118,39 @@ claude mcp add odoo \
 To generate an API key: Odoo → user avatar → My Profile → Account Security → API Keys → New API Key.
 
 `ODOO_YOLO=true` enables read/write access via standard XML-RPC without needing the `mcp_server` Odoo module installed. Use `ODOO_YOLO=read` for read-only access.
+
+## Workshops
+
+Workshop pages live at `/workshops/<slug>` with a listing at `/workshops`. Each workshop has its own dedicated page with a registration form that creates CRM leads.
+
+### Adding a new workshop
+
+1. Create an `ir.ui.view` with the workshop page content (use the Linux workshop view id 2030 as a template)
+2. Create a `website.page` record pointing to that view with the desired URL
+3. Add the event key to `VALID_EVENTS` in `addons/cpr_membership/controllers/event_interest.py`
+4. Add a card to the `/workshops` listing page (view id 2031)
+5. Optionally add a summary card to `/upcoming-events` (view id 1827) linking to the workshop page
+6. Deploy the code change and restart Odoo
+
+### UTM marketing attribution
+
+All registration forms support UTM tracking via URL parameters. Share links like:
+
+```
+https://code.pr/workshops/linux-workshop?utm_source=instagram&utm_medium=social&utm_campaign=linux-may2026
+```
+
+The `utm_source`, `utm_medium`, and `utm_campaign` values are captured by JavaScript on the page, submitted as hidden form fields, and stored on the CRM lead using Odoo's built-in UTM models. You can filter leads by source/medium/campaign in the CRM to evaluate which marketing channels are working.
+
+### Notification emails
+
+When someone registers, an email is sent to `leads@code.pr`. Workshop-specific recipients can be added in `event_interest.py` (e.g., `owen@reala.io` receives Linux workshop signups).
+
+## Blog
+
+The blog is powered by Odoo's `website_blog` module. Blog listing is at `/blog`. Posts are created as `blog.post` records via the Odoo UI or MCP.
+
+The blog cover banner on the listing page is hidden by a custom view override in `addons/cpr_membership/views/blog_views.xml`.
 
 ## Email Delivery (Odoo + Postfix + ImprovMX)
 
