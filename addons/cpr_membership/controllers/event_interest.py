@@ -13,6 +13,7 @@ VALID_EVENTS = {
     'cloudflare': 'Interest: Cloudflare Meetup',
     'home_assistant': 'Interest: Home Assistant Meetup',
     'demo_day': 'Interest: Demo Day',
+    'linux_workshop': 'Interest: Linux Workshop',
 }
 
 
