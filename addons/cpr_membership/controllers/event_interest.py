@@ -53,9 +53,8 @@ class EventInterestController(http.Controller):
         # Generate verification token
         token = secrets.token_urlsafe(32)
 
-        # Create CRM lead
-        Lead = request.env['crm.lead'].sudo()
-        lead = Lead.create({
+        # Build lead values
+        lead_vals = {
             'name': ', '.join(event_labels),
             'contact_name': name,
             'email_from': email,
@@ -65,7 +64,34 @@ class EventInterestController(http.Controller):
             'type': 'lead',
             'verify_token': token,
             'email_verified': False,
-        })
+        }
+
+        # Capture UTM marketing attribution
+        utm_source = kwargs.get('utm_source', '').strip()
+        utm_medium = kwargs.get('utm_medium', '').strip()
+        utm_campaign = kwargs.get('utm_campaign', '').strip()
+        if utm_source:
+            UtmSource = request.env['utm.source'].sudo()
+            source = UtmSource.search([('name', '=', utm_source)], limit=1)
+            if not source:
+                source = UtmSource.create({'name': utm_source})
+            lead_vals['source_id'] = source.id
+        if utm_medium:
+            UtmMedium = request.env['utm.medium'].sudo()
+            medium = UtmMedium.search([('name', '=', utm_medium)], limit=1)
+            if not medium:
+                medium = UtmMedium.create({'name': utm_medium})
+            lead_vals['medium_id'] = medium.id
+        if utm_campaign:
+            UtmCampaign = request.env['utm.campaign'].sudo()
+            campaign = UtmCampaign.search([('name', '=', utm_campaign)], limit=1)
+            if not campaign:
+                campaign = UtmCampaign.create({'name': utm_campaign})
+            lead_vals['campaign_id'] = campaign.id
+
+        # Create CRM lead
+        Lead = request.env['crm.lead'].sudo()
+        lead = Lead.create(lead_vals)
         _logger.info("Created event interest lead %s for %s (%s)", lead.id, name, email)
 
         # Notify team of new signup
