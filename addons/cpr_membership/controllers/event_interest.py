@@ -59,7 +59,8 @@ class EventInterestController(http.Controller):
             'name': ', '.join(event_labels),
             'contact_name': name,
             'email_from': email,
-            'description': f"Event interest signup from website.\nEvents: {', '.join(event_labels)}",
+            'description': f"Event interest signup from website.\nEvents: {', '.join(event_labels)}"
+                + (f"\nPC Type: {kwargs.get('pc_type', '').strip()}" if kwargs.get('pc_type') else ""),
             'tag_ids': [(6, 0, crm_tag_ids)],
             'type': 'lead',
             'verify_token': token,
